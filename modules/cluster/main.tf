@@ -5,7 +5,7 @@ resource "aws_ecs_cluster" "cluster" {
 resource "aws_ecs_service" "service" {
   name            = var.service_name
   cluster         = aws_ecs_cluster.cluster.id
-  task_definition = aws_task_definition.task_definition.arn
+  task_definition = aws_ecs_task_definition.task_definition.arn
   desired_count   = var.desired_count
 
   deployment_configuration {
@@ -13,7 +13,7 @@ resource "aws_ecs_service" "service" {
   }
 }
 
-resource "aws_task_definition" "task_definition" {
+resource "aws_ecs_task_definition" "task_definition" {
   family = var.task_definition_name
 
   container_definitions = file(var.container_definitions_file_path)
