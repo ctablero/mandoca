@@ -1,3 +1,8 @@
+variable auto_scaling_group_arn {
+  type        = string
+  description = "ARN of the Auto Scaling Group to be used as a capacity provider"
+}
+
 variable "cluster_name" {
   type        = string
   description = "Name of the cluster"

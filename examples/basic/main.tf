@@ -28,11 +28,12 @@ variable "task_definition_name" {
   description = "Name of the task definition"
 }
 
-module "ecs_cluster_with_self_managed_ec2" {
-  source = "../.."
-  cluster_name = var.cluster_name
-  container_definitions_file_path = var.container_definitions_file_path
-  desired_count = var.desired_count
-  service_name = var.service_name
-  task_definition_name = var.task_definition_name
-}
+#module "ecs_cluster_with_self_managed_ec2" {
+#  source = "../.."
+#  cluster_name = var.cluster_name
+#  container_definitions_file_path = var.container_definitions_file_path
+#  desired_count = var.desired_count
+#  service_name = var.service_name
+#  task_definition_name = var.task_definition_name
+#}
+#
