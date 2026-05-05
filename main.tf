@@ -1,5 +1,6 @@
 module "cluster" {
   source                          = "./modules/cluster"
+  auto_scaling_group_arn          = module.asg-provider.auto_scaling_group_arn
   cluster_name                    = var.cluster_name
   desired_count                   = var.desired_count
   service_name                    = var.service_name
@@ -7,11 +8,10 @@ module "cluster" {
   container_definitions_file_path = var.container_definitions_file_path
 }
 
-#TODO security-groups module
+# TODO Create networking module. Prepare subnets to provide to the asg-provider module.
 
 module "asg-provider" {
   source = "./modules/asg-provider"
   ami_id = var.ami_id
   instance_type = var.instance_type
-  #security_group_ids = module.security-groups.security_group_asg_provider_ids
 }
