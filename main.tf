@@ -8,10 +8,16 @@ module "cluster" {
   container_definitions_file_path = var.container_definitions_file_path
 }
 
-# TODO Create networking module. Prepare subnets to provide to the asg-provider module.
+module "networking" {
+  source        = "./modules/networking"
+  env_prefix    = var.env_prefix
+  vpc_id        = var.vpc_id
+  subnets_specs = var.subnets_specs
+}
 
 module "asg-provider" {
-  source = "./modules/asg-provider"
-  ami_id = var.ami_id
+  source        = "./modules/asg-provider"
+  ami_id        = var.ami_id
   instance_type = var.instance_type
+  subnets_ids   = module.networking.subnets_ids_for_asg_instances
 }

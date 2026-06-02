@@ -19,6 +19,11 @@ variable "desired_count" {
   default     = 0
 }
 
+variable "env_prefix" {
+  description = "Environment prefix for naming resources"
+  type        = string
+}
+
 variable "instance_type" {
   description = "Instance type for the EC2 instance"
   type        = string
@@ -29,7 +34,19 @@ variable "service_name" {
   description = "Name of the service"
 }
 
+variable "subnets_specs" {
+  description  = "A map of subnet specifications for ASG instances. Each key is a unique identifier for the subnet, and the value is an object containing 'cidr_block' and 'avail_zone'."
+  type         = map(object({
+    cidr_block = string
+    avail_zone = string
+  }))
+}
+
 variable "task_definition_name" {
   type        = string
   description = "Name of the task definition"
+}
+
+variable "vpc_id" {
+  description = "The ID of the VPC where network resources will be deployed"
 }
