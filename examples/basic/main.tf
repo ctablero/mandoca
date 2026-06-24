@@ -2,6 +2,18 @@ provider "aws" {
   region = "us-east-1"
 }
 
+variable "asg_max_size" {
+    description = "The maximum size of the Auto Scaling group."
+    type        = number
+    default     = 1
+}
+
+variable "asg_min_size" {
+    description = "The minimum size of the Auto Scaling group."
+    type        = number
+    default     = 0
+}
+
 variable "ami_id" {
     description = "AMI ID for the workload instances"
     type        = string
@@ -29,9 +41,22 @@ variable "desired_count" {
   default     = 0
 }
 
+variable "env_prefix" {
+  description = "Environment prefix for naming resources"
+  type        = string
+}
+
 variable "service_name" {
   type        = string
   description = "Name of the service"
+}
+
+variable "subnets_specs" {
+  description  = "A map of subnet specifications for ASG instances. Each key is a unique identifier for the subnet, and the value is an object containing 'cidr_block' and 'avail_zone'."
+  type         = map(object({
+    cidr_block = string
+    avail_zone = string
+  }))
 }
 
 variable "task_definition_name" {
@@ -39,13 +64,30 @@ variable "task_definition_name" {
   description = "Name of the task definition"
 }
 
+variable "vpc_cidr_block" {
+  description = "CIDR block for the VPC"
+  type        = string
+}
+
+resource "aws_vpc" "module_vpc" {
+  cidr_block = var.vpc_cidr_block
+  tags = {
+    Name = "${var.env_prefix}-vpc"
+  }
+}
+
 module "ecs_cluster_with_self_managed_ec2" {
-  source = "../.."
-  ami_id = var.ami_id
-  cluster_name = var.cluster_name
+  source                          = "../.."
+  asg_max_size                    = var.asg_max_size
+  asg_min_size                    = var.asg_min_size
+  ami_id                          = var.ami_id
+  cluster_name                    = var.cluster_name
   container_definitions_file_path = var.container_definitions_file_path
-  desired_count = var.desired_count
-  instance_type = var.instance_type
-  service_name = var.service_name
-  task_definition_name = var.task_definition_name
+  desired_count                   = var.desired_count
+  env_prefix                      = var.env_prefix
+  instance_type                   = var.instance_type
+  service_name                    = var.service_name
+  subnets_specs                   = var.subnets_specs
+  task_definition_name            = var.task_definition_name
+  vpc_id                          = aws_vpc.module_vpc.id
 }

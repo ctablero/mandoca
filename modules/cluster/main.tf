@@ -5,10 +5,16 @@ resource "aws_ecs_cluster" "cluster" {
 #Capacity providers
 resource "aws_ecs_cluster_capacity_providers" "capacity_providers" {
   cluster_name       = aws_ecs_cluster.cluster.name
-  capacity_providers = [aws_ecs_cluster_capacity_provider.asg_provider.name]
+  capacity_providers = [aws_ecs_capacity_provider.asg_provider.name]
+
+  default_capacity_provider_strategy {
+    capacity_provider = aws_ecs_capacity_provider.asg_provider.name
+    base              = 1
+    weight            = 100
+  }
 }
 
-resource "aws_ecs_cluster_capacity_provider" "asg_provider" {
+resource "aws_ecs_capacity_provider" "asg_provider" {
   name = "asg-provider"
 
   auto_scaling_group_provider {
@@ -18,7 +24,7 @@ resource "aws_ecs_cluster_capacity_provider" "asg_provider" {
     managed_scaling {
       status                    = "ENABLED"
       minimum_scaling_step_size = 1
-      maximum_scaling_step_size = 2
+      maximum_scaling_step_size = 1
       target_capacity           = 100
     }
   }
@@ -30,9 +36,8 @@ resource "aws_ecs_service" "service" {
   task_definition = aws_ecs_task_definition.task_definition.arn
   desired_count   = var.desired_count
 
-  deployment_configuration {
-    strategy = "BLUE_GREEN"
-  }
+  deployment_minimum_healthy_percent = 0
+  deployment_maximum_percent         = 100
 }
 
 resource "aws_ecs_task_definition" "task_definition" {

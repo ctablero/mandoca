@@ -1,5 +1,8 @@
 resource aws_autoscaling_group "asg" {
 
+  max_size = var.asg_max_size
+  min_size = var.asg_min_size
+
   launch_template {
     id = aws_launch_template.launch_template.id
     version = "$Latest"

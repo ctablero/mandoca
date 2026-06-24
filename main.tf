@@ -16,8 +16,10 @@ module "networking" {
 }
 
 module "asg-provider" {
-  source        = "./modules/asg-provider"
-  ami_id        = var.ami_id
-  instance_type = var.instance_type
-  subnets_ids   = module.networking.subnets_ids_for_asg_instances
+  asg_max_size   = var.asg_max_size
+  asg_min_size   = var.asg_min_size
+  source         = "./modules/asg-provider"
+  ami_id         = var.ami_id
+  instance_type  = var.instance_type
+  subnets_ids    = module.networking.subnets_ids_for_asg_instances
 }

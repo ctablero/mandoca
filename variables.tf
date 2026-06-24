@@ -1,3 +1,15 @@
+variable "asg_max_size" {
+  description = "The maximum size of the Auto Scaling group."
+  type        = number
+  default     = 1
+}
+
+variable "asg_min_size" {
+  description = "The minimum size of the Auto Scaling group."
+  type        = number
+  default     = 0
+}
+
 variable "ami_id"  {
   description = "The ID of the AMI to use for the instances in the Auto Scaling group."
   type        = string
