@@ -26,4 +26,11 @@ resource aws_launch_template "launch_template" {
   image_id    = var.ami_id
   instance_type = var.instance_type
 
+  # TODO: Provide the instance profile name via variables
+  /*iam_instance_profile {
+    name = "ecsInstanceRole"
+  }*/
+
+  user_data = filebase64("${path.module}/ecs.sh")
+
 }

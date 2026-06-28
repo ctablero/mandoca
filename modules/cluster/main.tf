@@ -38,6 +38,13 @@ resource "aws_ecs_service" "service" {
 
   deployment_minimum_healthy_percent = 0
   deployment_maximum_percent         = 100
+
+  force_new_deployment = true
+
+  capacity_provider_strategy {
+    capacity_provider = aws_ecs_capacity_provider.asg_provider.name
+    weight            = 100
+  }
 }
 
 resource "aws_ecs_task_definition" "task_definition" {
