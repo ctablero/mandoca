@@ -9,6 +9,7 @@ resource "aws_internet_gateway" "cluster_internet_gateway" {
 resource "aws_subnet" "cluster_subnets_for_asg_instances" {
   for_each = var.subnets_specs
   vpc_id            = var.vpc_id
+  map_public_ip_on_launch = true
   cidr_block        = each.value.cidr_block
   availability_zone = each.value.avail_zone
 

@@ -50,5 +50,12 @@ resource "aws_ecs_service" "service" {
 resource "aws_ecs_task_definition" "task_definition" {
   family = var.task_definition_name
 
+  execution_role_arn = var.ecs_task_execution_role_arn
+
   container_definitions = file(var.container_definitions_file_path)
+
+  runtime_platform {
+    operating_system_family = "LINUX"
+    cpu_architecture        = "X86_64"
+  }
 }

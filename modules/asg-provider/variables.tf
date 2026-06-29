@@ -20,6 +20,11 @@ variable "instance_type" {
   type        = string
 }
 
+variable "iam_instance_profile_name" {
+  description = "The name of the IAM instance profile to associate with the instances in the Auto Scaling group."
+  type        = string
+}
+
 variable "subnets_ids" {
   description = "A list of subnet IDs where the Auto Scaling group instances will be launched."
   type        = list(string)

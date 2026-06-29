@@ -20,16 +20,19 @@ resource aws_autoscaling_group "asg" {
 
 }
 
+data "aws_ssm_parameter" "ecs_optimized_ami" {
+  name = "/aws/service/ecs/optimized-ami/amazon-linux-2/recommended/image_id"
+}
+
 resource aws_launch_template "launch_template" {
 
-  name_prefix = "instance-"
-  image_id    = var.ami_id
+  name_prefix   = "instance-"
+  image_id      = data.aws_ssm_parameter.ecs_optimized_ami.value
   instance_type = var.instance_type
 
-  # TODO: Provide the instance profile name via variables
-  /*iam_instance_profile {
-    name = "ecsInstanceRole"
-  }*/
+  iam_instance_profile {
+    name = var.iam_instance_profile_name
+  }
 
   user_data = filebase64("${path.module}/ecs.sh")
 

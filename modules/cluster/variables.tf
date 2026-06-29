@@ -28,3 +28,8 @@ variable "task_definition_name" {
   type        = string
   description = "Name of the task definition"
 }
+
+variable "ecs_task_execution_role_arn" {
+  type        = string
+  description = "ARN of the ECS task execution role"
+}
