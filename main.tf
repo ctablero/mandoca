@@ -2,6 +2,12 @@ module "identity" {
   source = "./modules/identity"
 }
 
+module "security" {
+  source     = "./modules/security"
+  vpc_id     = var.vpc_id
+  env_prefix = var.env_prefix
+}
+
 module "cluster" {
   source                          = "./modules/cluster"
   auto_scaling_group_arn          = module.asg-provider.auto_scaling_group_arn
@@ -21,11 +27,12 @@ module "networking" {
 }
 
 module "asg-provider" {
-  asg_max_size              = var.asg_max_size
-  asg_min_size              = var.asg_min_size
-  iam_instance_profile_name = module.identity.iam_instance_profile_name
-  source                    = "./modules/asg-provider"
-  ami_id                    = var.ami_id
-  instance_type             = var.instance_type
-  subnets_ids               = module.networking.subnets_ids_for_asg_instances
+  asg_max_size                        = var.asg_max_size
+  asg_min_size                        = var.asg_min_size
+  iam_instance_profile_name           = module.identity.iam_instance_profile_name
+  security_group_id_for_asg_instances = module.security.security_group_id_for_asg_instances
+  source                              = "./modules/asg-provider"
+  ami_id                              = var.ami_id
+  instance_type                       = var.instance_type
+  subnets_ids                         = module.networking.subnets_ids_for_asg_instances
 }

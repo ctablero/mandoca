@@ -26,9 +26,10 @@ data "aws_ssm_parameter" "ecs_optimized_ami" {
 
 resource aws_launch_template "launch_template" {
 
-  name_prefix   = "instance-"
-  image_id      = data.aws_ssm_parameter.ecs_optimized_ami.value
-  instance_type = var.instance_type
+  name_prefix             = "instance-"
+  image_id                = data.aws_ssm_parameter.ecs_optimized_ami.value
+  instance_type           = var.instance_type
+  vpc_security_group_ids = [var.security_group_id_for_asg_instances]
 
   iam_instance_profile {
     name = var.iam_instance_profile_name
