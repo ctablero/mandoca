@@ -4,7 +4,7 @@ resource "aws_security_group" "asg_instances_sg" {
   vpc_id      = var.vpc_id
 
   tags = {
-    Name = "${var.env_prefix}"
+    Name = "${var.env_prefix}-asg-instances-sg"
   }
 }
 
@@ -12,4 +12,8 @@ resource "aws_vpc_security_group_egress_rule" "asg_instances_sg_allow_all_outbou
   security_group_id = aws_security_group.asg_instances_sg.id
   cidr_ipv4         = "0.0.0.0/0"
   ip_protocol       = "-1"
+
+  tags = {
+    Name = "${var.env_prefix}-asg-instances-sg-allow-all-outbounds"
+  }
 }

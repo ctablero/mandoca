@@ -1,5 +1,13 @@
 provider "aws" {
   region = "us-east-1"
+
+  default_tags {
+    tags = {
+      Environment = var.env_prefix
+      App         = var.app_name
+      ManagedBy   = "Terraform"
+    }
+  }
 }
 
 variable "asg_max_size" {
@@ -12,6 +20,11 @@ variable "asg_min_size" {
     description = "The minimum size of the Auto Scaling group."
     type        = number
     default     = 0
+}
+
+variable "app_name" {
+  description = "Name of the application"
+  type        = string
 }
 
 variable "ami_id" {

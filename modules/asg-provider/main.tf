@@ -1,3 +1,5 @@
+data aws_default_tags "current" {}
+
 resource aws_autoscaling_group "asg" {
 
   max_size = var.asg_max_size
@@ -8,6 +10,16 @@ resource aws_autoscaling_group "asg" {
   launch_template {
     id = aws_launch_template.launch_template.id
     version = "$Latest"
+  }
+
+  #Propagating default tags defined in the provider block to the ASG instances
+  dynamic "tag" {
+    for_each = data.aws_default_tags.current.tags
+    content {
+      key                 = tag.key
+      value               = tag.value
+      propagate_at_launch = true
+    }
   }
 
   tag {
