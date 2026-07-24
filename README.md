@@ -11,6 +11,10 @@ A terraform module that covers the declaration and configuration of all required
 
 It implements practices of security, high availability and redundancy so you focus on templating and providing the container definitions.
 
+## Architecture diagram
+
+![Architecture diagram](./diagrams/mandoca-architecture.jpg)
+
 ## 🚀 Setup instructions
 
 Clone this repository and proceed with steps below.
