@@ -13,6 +13,7 @@ module "cluster" {
   auto_scaling_group_arn          = module.asg-provider.auto_scaling_group_arn
   cluster_name                    = var.cluster_name
   desired_count                   = var.desired_count
+  load_balancers_list             = var.load_balancers_list
   service_name                    = var.service_name
   task_definition_name            = var.task_definition_name
   ecs_task_execution_role_arn     = module.identity.ecs_task_execution_role_arn

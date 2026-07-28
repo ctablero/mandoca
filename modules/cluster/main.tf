@@ -45,6 +45,16 @@ resource "aws_ecs_service" "service" {
     capacity_provider = aws_ecs_capacity_provider.asg_provider.name
     weight            = 100
   }
+  
+  # Permits zero or more load balancers associated with the service
+  dynamic "load_balancer" {
+    for_each = var.load_balancers_list
+    content {
+      target_group_arn = load_balancer.value.target_group_arn
+      container_name   = load_balancer.value.container_name
+      container_port   = load_balancer.value.container_port
+    }
+  }
 }
 
 resource "aws_ecs_task_definition" "task_definition" {

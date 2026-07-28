@@ -41,6 +41,16 @@ variable "instance_type" {
   type        = string
 }
 
+variable "load_balancers_list" {
+  type = list(object({
+    target_group_arn = string
+    container_name   = string
+    container_port   = number
+  }))
+  description = "List of load balancers to be associated with the ECS service"
+  default     = []
+}
+
 variable "service_name" {
   type        = string
   description = "Name of the service"
