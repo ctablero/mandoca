@@ -1,39 +1,39 @@
-resource "aws_alb" "stack_alb" {
-  name               = "stack-alb"
+resource "aws_lb" "stack_elb" {
+  name               = "stack-elb"
   internal           = false
   load_balancer_type = "application"
   security_groups    = var.security_groups_ids
   subnets            = var.subnets_ids
 
   tags = {
-    Name = "${var.env_prefix}-stack-alb"
+    Name = "${var.env_prefix}-stack-elb"
   }
 }
 
-resource "aws_alb_listener" "stack_alb_listener" {
-  load_balancer_arn = aws_alb.stack_alb.arn
+resource "aws_lb_listener" "stack_elb_listener" {
+  load_balancer_arn = aws_lb.stack_elb.arn
   port              = 80
   protocol          = "HTTP"
 
   # This is the default rule definition
   default_action {
     type          = "forward"
-    target_group_arn = aws_alb_target_group.stack_alb_target_group.arn
+    target_group_arn = aws_lb_target_group.stack_elb_target_group.arn
   }
 
   tags = {
-    Name = "${var.env_prefix}-stack-alb-listener"
+    Name = "${var.env_prefix}-stack-elb-listener"
   }
 }
 
-resource aws_alb_target_group "stack_alb_target_group" {
-  name        = "stack-alb-target-group"
+resource aws_lb_target_group "stack_elb_target_group" {
+  name        = "stack-elb-target-group"
   port        = 80 # This port will be automatically overwritten once the TG is associated with the ECS
   protocol    = "HTTP"
   target_type = "instance"
-  vpc_id      = aws_vpc.module_vpc.id
+  vpc_id      = var.vpc_id
 
   tags = {
-    Name = "${var.env_prefix}-stack-alb-target-group"
+    Name = "${var.env_prefix}-stack-elb-target-group"
   }
 }

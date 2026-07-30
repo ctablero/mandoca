@@ -108,31 +108,17 @@ resource "aws_vpc" "module_vpc" {
   }
 }
 
-### ALB related resources.
-/*
-###
-*/
-
-
 module "ecs_cluster_with_asg_capacity_provider" {
-  source                                   = "../.."
-  alb_security_group_ingress_rule_creation = true
-  alb_security_group_id                    = aws_security_group.alb_security_group.id
-  asg_max_size                             = var.asg_max_size
-  asg_min_size                             = var.asg_min_size
-  ami_id                                   = var.ami_id
-  cluster_name                             = var.cluster_name
-  container_definitions_file_path          = var.container_definitions_file_path
-  desired_count                            = var.desired_count
-  env_prefix                               = var.env_prefix
-  instance_type                            = var.instance_type
-  load_balancers_list                      = [
-    {
-      target_group_arn = aws_alb_target_group.stack_alb_target_group.arn
-      container_name   = "sample-ec2-provider-app" # Replace with your container name
-      container_port   = 80 # Replace with your container port
-    }
-  ]
+  source                          = "../.."
+  elb_enabled                     = true
+  asg_max_size                    = var.asg_max_size
+  asg_min_size                    = var.asg_min_size
+  ami_id                          = var.ami_id
+  cluster_name                    = var.cluster_name
+  container_definitions_file_path = var.container_definitions_file_path
+  desired_count                   = var.desired_count
+  env_prefix                      = var.env_prefix
+  instance_type                   = var.instance_type
   service_name                    = var.service_name
   subnets_specs                   = var.subnets_specs
   task_definition_name            = var.task_definition_name

@@ -1,3 +1,3 @@
-output "stack_alb_target_group_arn" {
-  value = aws_alb_target_group.stack_alb_target_group.arn
+output "stack_elb_target_group_arn" {
+  value = aws_lb_target_group.stack_elb_target_group.arn
 }

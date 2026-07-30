@@ -19,7 +19,7 @@ variable "desired_count" {
   default     = 0
 }
 
-variable "load_balancers_list" {
+variable "load_balancers_specs_list" {
   type = list(object({
     target_group_arn = string
     container_name   = string
