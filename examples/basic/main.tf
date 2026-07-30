@@ -10,6 +10,25 @@ provider "aws" {
   }
 }
 
+variable "alb_subnets_specs" {
+  description  = "A map of subnet specifications for ALB instances. Each key is a unique identifier for the subnet, and the value is an object containing 'cidr_block' and 'avail_zone'."
+  type         = map(object({
+    cidr_block = string
+    avail_zone = string
+  }))
+  # Example alb subnets specs, replace with your own
+  default      = {
+    "subnet-3" = {
+        avail_zone = "us-east-1a"
+        cidr_block = "10.2.3.0/24"
+    }
+    "subnet-4" = {
+        avail_zone = "us-east-1b"
+        cidr_block = "10.2.4.0/24"
+    }
+}
+}
+
 variable "asg_max_size" {
     description = "The maximum size of the Auto Scaling group."
     type        = number
@@ -90,91 +109,30 @@ resource "aws_vpc" "module_vpc" {
 }
 
 ### ALB related resources.
-
-resource "aws_security_group" "alb_security_group" {
-    
-    name = "${var.env_prefix}-alb-security-group"
-    vpc_id = var.vpc_id
-
-    tags = {
-        Name = "${var.env_prefix}-alb-security-group"
-    }
-}
-
-resource "aws_security_group_rule" "alb_security_group_rule_http_inbound_worldwide" {
-    type = "ingress"
-    from_port = 80
-    to_port = 80
-    protocol = "TCP"
-    security_group_id = aws_security_group.alb_security_group.id
-    cidr_blocks = ["0.0.0.0/0"]
-}
-
-## availability zones must match the ones used for the targets in the ECS cluster
-resource "aws_subnet" "subnets_for_alb" {
-  for_each = var.alb_subnets_specs
-  vpc_id            = var.vpc_id
-  cidr_block        = each.value.cidr_block
-  availability_zone = each.value.avail_zone
-
-  tags = {
-    Name = "${var.env_prefix}-cluster-subnet-${each.value.avail_zone}"
-  }
-}
-
-resource "aws_alb" "stack_alb" {
-    name               = "stack-alb"
-    internal           = false
-    load_balancer_type = "application"
-    security_groups    = [aws_security_group.alb_security_group.id]
-    subnets            = [for subnet in aws_subnet.subnets_for_alb: subnet.id]
-
-    tags = {
-        Name = "${var.env_prefix}-stack-alb"
-    }
-}
-
-resource "aws_alb_listener" "stack_alb_listener" {
-    load_balancer_arn = aws_alb.stack_alb.arn
-    port              = 80
-    protocol          = "HTTP"
-
-    # This is the default rule definition
-    default_action {
-        type          = "forward"
-        target_group_arn = aws_alb_target_group.stack_alb_target_group.arn
-    }
-
-    tags = {
-        Name = "${var.env_prefix}-stack-alb-listener"
-    }
-}
-
-resource aws_alb_target_group "stack_alb_target_group" {
-    name     = "stack-alb-target-group"
-    port     = 8080
-    protocol = "HTTP"
-    vpc_id   = var.vpc_id
-
-    tags = {
-        Name = "${var.env_prefix}-stack-alb-target-group"
-    }
-}
+/*
 ###
-
+*/
 
 
 module "ecs_cluster_with_asg_capacity_provider" {
-  source                          = "../.."
-  asg_max_size                    = var.asg_max_size
-  asg_min_size                    = var.asg_min_size
-  ami_id                          = var.ami_id
-  cluster_name                    = var.cluster_name
-  container_definitions_file_path = var.container_definitions_file_path
-  desired_count                   = var.desired_count
-  env_prefix                      = var.env_prefix
-  instance_type                   = var.instance_type
-  load_balancers_list             = ## Provision a list that includes parameter for the ALB created
+  source                                   = "../.."
+  alb_security_group_ingress_rule_creation = true
+  alb_security_group_id                    = aws_security_group.alb_security_group.id
+  asg_max_size                             = var.asg_max_size
+  asg_min_size                             = var.asg_min_size
+  ami_id                                   = var.ami_id
+  cluster_name                             = var.cluster_name
+  container_definitions_file_path          = var.container_definitions_file_path
+  desired_count                            = var.desired_count
+  env_prefix                               = var.env_prefix
+  instance_type                            = var.instance_type
+  load_balancers_list                      = [
+    {
+      target_group_arn = aws_alb_target_group.stack_alb_target_group.arn
+      container_name   = "sample-ec2-provider-app" # Replace with your container name
+      container_port   = 80 # Replace with your container port
+    }
+  ]
   service_name                    = var.service_name
   subnets_specs                   = var.subnets_specs
   task_definition_name            = var.task_definition_name

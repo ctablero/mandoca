@@ -31,6 +31,12 @@ variable "desired_count" {
   default     = 0
 }
 
+variable "elb_enabled" {
+  description = "Flag to determine whether to create resources related to ELB."
+  type        = bool
+  default     = false
+}
+
 variable "env_prefix" {
   description = "Environment prefix for naming resources"
   type        = string

@@ -3,9 +3,17 @@ module "identity" {
 }
 
 module "security" {
-  source     = "./modules/security"
-  vpc_id     = var.vpc_id
-  env_prefix = var.env_prefix
+  source      = "./modules/security"
+  elb_enabled = var.elb_enabled
+  vpc_id      = var.vpc_id
+  env_prefix  = var.env_prefix
+}
+
+module "elb" {
+  source = "./modules/elb"
+  env_prefix          = var.env_prefix
+  security_groups_ids = module.security.security_groups_ids_for_elb
+  subnets_ids         = module.networking.subnets_ids
 }
 
 module "cluster" {
@@ -28,12 +36,12 @@ module "networking" {
 }
 
 module "asg-provider" {
-  asg_max_size                        = var.asg_max_size
-  asg_min_size                        = var.asg_min_size
-  iam_instance_profile_name           = module.identity.iam_instance_profile_name
-  security_group_id_for_asg_instances = module.security.security_group_id_for_asg_instances
-  source                              = "./modules/asg-provider"
-  ami_id                              = var.ami_id
-  instance_type                       = var.instance_type
-  subnets_ids                         = module.networking.subnets_ids_for_asg_instances
+  asg_max_size                         = var.asg_max_size
+  asg_min_size                         = var.asg_min_size
+  iam_instance_profile_name            = module.identity.iam_instance_profile_name
+  security_group_ids_for_asg_instances = module.security.security_group_ids_for_asg_instances
+  source                               = "./modules/asg-provider"
+  ami_id                               = var.ami_id
+  instance_type                        = var.instance_type
+  subnets_ids                          = module.networking.subnets_ids_for_asg_instances
 }
