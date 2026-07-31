@@ -5,7 +5,7 @@ variable "env_prefix" {
 
 variable "security_groups_ids" {
   description = "The IDs of the security groups to associate with the ELB."
-  type        = string
+  type        = list(string)
 }
 
 variable "subnets_ids" {

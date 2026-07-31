@@ -25,7 +25,7 @@ module "cluster" {
   desired_count                   = var.desired_count
   load_balancers_specs_list       = var.elb_enabled == true ? [
     {
-      target_group_arn = try(module.elb.stack_elb_target_group_arn, "")
+      target_group_arn = try(module.elb[0].stack_elb_target_group_arn, "")
       container_name   = "sample-ec2-provider-app" # Replace with your container name
       container_port   = 80 # Replace with your container port
     }
