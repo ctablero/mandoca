@@ -10,25 +10,6 @@ provider "aws" {
   }
 }
 
-variable "alb_subnets_specs" {
-  description  = "A map of subnet specifications for ALB instances. Each key is a unique identifier for the subnet, and the value is an object containing 'cidr_block' and 'avail_zone'."
-  type         = map(object({
-    cidr_block = string
-    avail_zone = string
-  }))
-  # Example alb subnets specs, replace with your own
-  default      = {
-    "subnet-3" = {
-        avail_zone = "us-east-1a"
-        cidr_block = "10.2.3.0/24"
-    }
-    "subnet-4" = {
-        avail_zone = "us-east-1b"
-        cidr_block = "10.2.4.0/24"
-    }
-}
-}
-
 variable "asg_max_size" {
     description = "The maximum size of the Auto Scaling group."
     type        = number
@@ -108,7 +89,7 @@ resource "aws_vpc" "module_vpc" {
   }
 }
 
-/*module "ecs_cluster_with_asg_capacity_provider" {
+module "ecs_cluster_with_asg_capacity_provider" {
   source                          = "../.."
   elb_enabled                     = true
   asg_max_size                    = var.asg_max_size
@@ -123,4 +104,4 @@ resource "aws_vpc" "module_vpc" {
   subnets_specs                   = var.subnets_specs
   task_definition_name            = var.task_definition_name
   vpc_id                          = aws_vpc.module_vpc.id
-}*/
+}
