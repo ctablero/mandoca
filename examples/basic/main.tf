@@ -108,7 +108,7 @@ resource "aws_vpc" "module_vpc" {
   }
 }
 
-module "ecs_cluster_with_asg_capacity_provider" {
+/*module "ecs_cluster_with_asg_capacity_provider" {
   source                          = "../.."
   elb_enabled                     = true
   asg_max_size                    = var.asg_max_size
@@ -123,4 +123,4 @@ module "ecs_cluster_with_asg_capacity_provider" {
   subnets_specs                   = var.subnets_specs
   task_definition_name            = var.task_definition_name
   vpc_id                          = aws_vpc.module_vpc.id
-}
+}*/
