@@ -25,9 +25,9 @@ variable "iam_instance_profile_name" {
   type        = string
 }
 
-variable "security_group_id_for_asg_instances" {
+variable "security_group_ids_for_asg_instances" {
   description = "The ID of the security group to associate with the instances in the Auto Scaling group."
-  type        = string
+  type        = list(string)
 }
 
 variable "subnets_ids" {

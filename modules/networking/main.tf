@@ -6,7 +6,7 @@ resource "aws_internet_gateway" "cluster_internet_gateway" {
   }
 }
 
-resource "aws_subnet" "cluster_subnets_for_asg_instances" {
+resource "aws_subnet" "cluster_subnets" {
   for_each = var.subnets_specs
   vpc_id            = var.vpc_id
   map_public_ip_on_launch = true
@@ -31,8 +31,8 @@ resource "aws_route_table" "cluster_route_table" {
   }
 }
 
-resource "aws_route_table_association" "route_table_association_subnets_for_asg_instances" {
-  for_each = aws_subnet.cluster_subnets_for_asg_instances
+resource "aws_route_table_association" "route_table_association_subnets" {
+  for_each = aws_subnet.cluster_subnets
   subnet_id      = each.value.id
   route_table_id = aws_route_table.cluster_route_table.id
 }
