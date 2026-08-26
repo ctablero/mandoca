@@ -28,6 +28,7 @@ resource "aws_iam_role" "mem_checker_role" {
         Principal = {
             Service = "scheduler.amazonaws.com"
         }
+        Action: "sts:AssumeRole"
       }
     ]
   })
@@ -52,11 +53,11 @@ resource "aws_iam_role_policy" "eventbridge_invoke_policy" {
 }
 
 resource "aws_lambda_function" "mem_checker" {
-  filename      = "mem-checker.zip"
-  function_name = "mem-checker"
+  filename      = var.lambda_function_filename
+  function_name = "mem_checker"
   role          = aws_iam_role.role_for_lambda.arn
   handler       = "mem_checker.lambda_handler"
-  runtime       = "python3.9"
+  runtime       = "python3.12"
 }
 
 # Role for Lambda function to execute and interact with other AWS services
@@ -72,6 +73,7 @@ resource "aws_iam_role" "role_for_lambda" {
         Principal = {
             Service = "lambda.amazonaws.com"
         }
+        Action: "sts:AssumeRole"
       }
     ]
   })
@@ -92,8 +94,13 @@ resource "aws_iam_role_policy" "lambda_execution_policy" {
           "ecs:UpdateService",
           "ecs:DescribeServices"
         ],
-        "Resource": "arn:aws:ecs:REGION:ACCOUNT_ID:service/CLUSTER_NAME/SERVICE_NAME"
+        "Resource": var.cluster_arn
       }
     ]
   })
+}
+
+resource "aws_iam_role_policy_attachment" "attachment_to_basic_execution_role_policy" {
+  role = aws_iam_role.role_for_lambda.name
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
 }

@@ -59,6 +59,11 @@ variable "env_prefix" {
   type        = string
 }
 
+variable "lambda_function_filename" {
+  description = "Path to the Lambda function zip file"
+  type        = string
+}
+
 variable "service_name" {
   type        = string
   description = "Name of the service"
@@ -100,6 +105,7 @@ module "ecs_cluster_with_asg_capacity_provider" {
   desired_count                   = var.desired_count
   env_prefix                      = var.env_prefix
   instance_type                   = var.instance_type
+  lambda_function_filename        = var.lambda_function_filename
   service_name                    = var.service_name
   subnets_specs                   = var.subnets_specs
   task_definition_name            = var.task_definition_name

@@ -47,6 +47,11 @@ variable "instance_type" {
   type        = string
 }
 
+variable "lambda_function_filename" {
+  description = "Path to the Lambda function zip file"
+  type        = string
+}
+
 variable "service_name" {
   type        = string
   description = "Name of the service"

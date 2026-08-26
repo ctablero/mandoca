@@ -53,3 +53,9 @@ module "asg-provider" {
   instance_type                        = var.instance_type
   subnets_ids                          = module.networking.subnets_ids
 }
+
+module "task-mem-checker" {
+  source                   = "./modules/task-mem-checker"
+  cluster_arn              = module.cluster.cluster_arn
+  lambda_function_filename = var.lambda_function_filename
+}
