@@ -57,5 +57,8 @@ module "asg-provider" {
 module "task-mem-checker" {
   source                   = "./modules/task-mem-checker"
   cluster_arn              = module.cluster.cluster_arn
+  cluster_to_restart_name  = var.cluster_name
   lambda_function_filename = var.lambda_function_filename
+  service_arn              = module.cluster.service_arn
+  service_to_restart_name  = var.service_name
 }

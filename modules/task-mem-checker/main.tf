@@ -8,7 +8,7 @@ resource "aws_scheduler_schedule" "lambda_mem_checker" {
     mode = "OFF"
   }
 
-  schedule_expression = "rate(10 minutes)"
+  schedule_expression = "rate(20 minutes)"
 
   target {
     arn      = aws_lambda_function.mem_checker.arn
@@ -58,6 +58,13 @@ resource "aws_lambda_function" "mem_checker" {
   role          = aws_iam_role.role_for_lambda.arn
   handler       = "mem_checker.lambda_handler"
   runtime       = "python3.12"
+
+  environment {
+    variables = {
+      CLUSTER_NAME = var.cluster_to_restart_name
+      SERVICE_NAME = var.service_to_restart_name
+    }
+  }
 }
 
 # Role for Lambda function to execute and interact with other AWS services
@@ -94,7 +101,7 @@ resource "aws_iam_role_policy" "lambda_execution_policy" {
           "ecs:UpdateService",
           "ecs:DescribeServices"
         ],
-        "Resource": var.cluster_arn
+        "Resource": [var.cluster_arn, var.service_arn]
       }
     ]
   })
