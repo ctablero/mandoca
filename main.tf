@@ -18,6 +18,10 @@ module "elb" {
   vpc_id              = var.vpc_id
 }
 
+module "secrets" {
+  source = "./modules/secrets"
+}
+
 module "cluster" {
   source                          = "./modules/cluster"
   auto_scaling_group_arn          = module.asg-provider.auto_scaling_group_arn
@@ -34,6 +38,7 @@ module "cluster" {
   task_definition_name            = var.task_definition_name
   ecs_task_execution_role_arn     = module.identity.ecs_task_execution_role_arn
   container_definitions_file_path = var.container_definitions_file_path
+  redis_endpoint_arn              = module.secrets.redis_endpoint_arn
 }
 
 module "networking" {

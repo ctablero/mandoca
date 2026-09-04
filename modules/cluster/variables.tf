@@ -13,6 +13,11 @@ variable "container_definitions_file_path" {
   description = "Path to the container definitions file"
 }
 
+variable "redis_endpoint_arn" {
+  type        = string
+  description = "Redis endpoint arn"
+}
+
 variable "desired_count" {
   type        = number
   description = "Number of desired tasks"

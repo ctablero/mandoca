@@ -62,7 +62,9 @@ resource "aws_ecs_task_definition" "task_definition" {
   network_mode = "bridge"
   execution_role_arn = var.ecs_task_execution_role_arn
 
-  container_definitions = file(var.container_definitions_file_path)
+  container_definitions = templatefile(var.container_definitions_file_path, {
+    redis_endpoint_arn = var.redis_endpoint_arn
+  })
 
   runtime_platform {
     operating_system_family = "LINUX"
