@@ -37,10 +37,11 @@ module "cluster" {
 }
 
 module "networking" {
-  source        = "./modules/networking"
-  env_prefix    = var.env_prefix
-  vpc_id        = var.vpc_id
-  subnets_specs = var.subnets_specs
+  source             = "./modules/networking"
+  enable_nat_gateway = var.enable_nat_gateway
+  env_prefix         = var.env_prefix
+  vpc_id             = var.vpc_id
+  subnets_specs      = var.subnets_specs
 }
 
 module "asg-provider" {

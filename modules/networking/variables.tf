@@ -1,3 +1,9 @@
+variable "enable_nat_gateway" {
+  description = "Boolean flag to determine whether to create a NAT Gateway to give private subnets access to the internet"
+  type        = bool
+  default     = false
+}
+
 variable "env_prefix" {
   description = "Environment prefix for naming resources"
   type        = string

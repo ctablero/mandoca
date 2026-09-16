@@ -54,6 +54,12 @@ variable "desired_count" {
   default     = 0
 }
 
+variable "enable_nat_gateway" {
+  description = "Boolean flag to determine whether to create a NAT Gateway to give private subnets access to the internet"
+  type        = bool
+  default     = false
+}
+
 variable "env_prefix" {
   description = "Environment prefix for naming resources"
   type        = string
@@ -98,6 +104,7 @@ module "ecs_cluster_with_asg_capacity_provider" {
   cluster_name                    = var.cluster_name
   container_definitions_file_path = var.container_definitions_file_path
   desired_count                   = var.desired_count
+  enable_nat_gateway              = var.enable_nat_gateway
   env_prefix                      = var.env_prefix
   instance_type                   = var.instance_type
   service_name                    = var.service_name
