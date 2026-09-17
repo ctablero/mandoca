@@ -6,6 +6,15 @@ resource "aws_internet_gateway" "cluster_internet_gateway" {
   }
 }
 
+# Regional NAT Gateway with auto mode
+resource "aws_nat_gateway" "cluster_nat_gateway" {
+  count = var.enable_nat_gateway == true ? 1 : 0
+  vpc_id            = var.vpc_id
+  availability_mode = "regional"
+
+  depends_on = [aws_internet_gateway.cluster_internet_gateway]
+}
+
 resource "aws_subnet" "cluster_subnets" {
   for_each                = var.subnets_specs
   vpc_id                  = var.vpc_id
@@ -23,7 +32,7 @@ resource "aws_route_table" "cluster_route_table" {
   vpc_id = var.vpc_id
   route {
     cidr_block = "0.0.0.0/0"
-    gateway_id = var.enable_nat_gateway == true ? aws_nat_gateway.cluster_nat_gateway.id : aws_internet_gateway.cluster_internet_gateway.id
+    gateway_id = var.enable_nat_gateway == true ? aws_nat_gateway.cluster_nat_gateway[0].id : aws_internet_gateway.cluster_internet_gateway.id
   }
 
   tags = {
