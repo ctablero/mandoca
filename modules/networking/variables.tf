@@ -1,20 +1,23 @@
-variable "enable_nat_gateway" {
-  description = "Boolean flag to determine whether to create a NAT Gateway to give private subnets access to the internet"
-  type        = bool
-  default     = false
-}
-
 variable "env_prefix" {
   description = "Environment prefix for naming resources"
   type        = string
 }
 
-variable "subnets_specs" {
-  description = "A map of subnet specifications for ASG instances. Each key is a unique identifier for the subnet, and the value is an object containing 'cidr_block' and 'avail_zone'."
-  type        = map(object({
-    cidr_block = string
-    avail_zone = string
-  }))
+variable "external_subnets_specs" {
+    description = "Specifications for the external subnets to be created"
+    type        = map(object({
+        avail_zone = string
+        cidr_block = string
+    }))
+}
+
+variable "internal_subnets_specs" {
+    description = "Specifications for the internal subnets to be created"
+    type        = map(object({
+        avail_zone = string
+        cidr_block = string
+    }))
+    default     = {}
 }
 
 variable "vpc_id" {

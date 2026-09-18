@@ -14,7 +14,7 @@ module "elb" {
   source = "./modules/elb"
   env_prefix          = var.env_prefix
   security_groups_ids = module.security.security_groups_ids_for_elb
-  subnets_ids         = module.networking.subnets_ids
+  subnets_ids         = module.networking.external_subnets_ids
   vpc_id              = var.vpc_id
 }
 
@@ -37,11 +37,11 @@ module "cluster" {
 }
 
 module "networking" {
-  source             = "./modules/networking"
-  enable_nat_gateway = var.enable_nat_gateway
-  env_prefix         = var.env_prefix
-  vpc_id             = var.vpc_id
-  subnets_specs      = var.subnets_specs
+  source                  = "./modules/networking"
+  env_prefix              = var.env_prefix
+  external_subnets_specs  = var.external_subnets_specs
+  internal_subnets_specs  = var.internal_subnets_specs
+  vpc_id                  = var.vpc_id
 }
 
 module "asg-provider" {
@@ -52,5 +52,5 @@ module "asg-provider" {
   source                               = "./modules/asg-provider"
   ami_id                               = var.ami_id
   instance_type                        = var.instance_type
-  subnets_ids                          = module.networking.subnets_ids
+  subnets_ids                          = length(var.internal_subnets_specs) > 0 ? module.networking.internal_subnets_ids : module.networking.external_subnets_ids
 }
