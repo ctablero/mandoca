@@ -59,17 +59,26 @@ variable "env_prefix" {
   type        = string
 }
 
+variable "external_subnets_specs" {
+    description = "Specifications for the external subnets to be created"
+    type        = map(object({
+        avail_zone = string
+        cidr_block = string
+    }))
+}
+
+variable "internal_subnets_specs" {
+    description = "Specifications for the internal subnets to be created"
+    type        = map(object({
+        avail_zone = string
+        cidr_block = string
+    }))
+    default     = {}
+}
+
 variable "service_name" {
   type        = string
   description = "Name of the service"
-}
-
-variable "subnets_specs" {
-  description  = "A map of subnet specifications for ASG instances. Each key is a unique identifier for the subnet, and the value is an object containing 'cidr_block' and 'avail_zone'."
-  type         = map(object({
-    cidr_block = string
-    avail_zone = string
-  }))
 }
 
 variable "task_definition_name" {
@@ -99,9 +108,10 @@ module "ecs_cluster_with_asg_capacity_provider" {
   container_definitions_file_path = var.container_definitions_file_path
   desired_count                   = var.desired_count
   env_prefix                      = var.env_prefix
+  external_subnets_specs          = var.external_subnets_specs
+  internal_subnets_specs          = var.internal_subnets_specs
   instance_type                   = var.instance_type
   service_name                    = var.service_name
-  subnets_specs                   = var.subnets_specs
   task_definition_name            = var.task_definition_name
   vpc_id                          = aws_vpc.module_vpc.id
 }
