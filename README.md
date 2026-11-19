@@ -34,7 +34,7 @@ container_definitions_file_path = "/path/to/container-definitions/file.json"
 desired_count = 1
 instance_type = "t2.micro"
 service_name = "awesome-service"
-subnets_specs = {
+internal_subnets_specs = {
     "subnet-1" = {
         avail_zone = "us-east-1a"
         cidr_block = "10.2.1.0/24"
@@ -44,6 +44,18 @@ subnets_specs = {
         cidr_block = "10.2.2.0/24"
     }
 }
+#This variable empty to avoid the creation of external/public subnets, but you can uncomment the following block to create them if needed.
+/*external_subnets_specs = {
+    "subnet-1" = {
+        avail_zone = "us-east-1a"
+        cidr_block = "10.2.3.0/24"
+    }
+    "subnet-2" = {
+        avail_zone = "us-east-1b"
+        cidr_block = "10.2.4.0/24"
+    }
+}*/
+external_subnets_specs = {}
 task_definition_name = "awesome-task-definition"
 vpc_cidr_block = "10.2.0.0/16"
 ```
@@ -59,6 +71,7 @@ Call the module(See examples folder for a basic invoing example). You need to pr
 ```hcl
 module "ecs_cluster_with_asg_capacity_provider" {
   source                          = "../.."
+  elb_enabled                     = true
   asg_max_size                    = var.asg_max_size
   asg_min_size                    = var.asg_min_size
   ami_id                          = var.ami_id
@@ -66,9 +79,10 @@ module "ecs_cluster_with_asg_capacity_provider" {
   container_definitions_file_path = var.container_definitions_file_path
   desired_count                   = var.desired_count
   env_prefix                      = var.env_prefix
+  external_subnets_specs          = var.external_subnets_specs
+  internal_subnets_specs          = var.internal_subnets_specs
   instance_type                   = var.instance_type
   service_name                    = var.service_name
-  subnets_specs                   = var.subnets_specs
   task_definition_name            = var.task_definition_name
   vpc_id                          = aws_vpc.module_vpc.id
 }
